@@ -5,7 +5,7 @@
 Summary: X.Org X11 libXtst runtime library
 Name: libXtst
 Version: 1.2.3
-Release: 7%{?gitdate:.%{gitdate}git%{gitversion}}%{?dist}
+Release: 8%{?gitdate:.%{gitdate}git%{gitversion}}%{?dist}
 License: MIT
 Group: System Environment/Libraries
 URL: http://www.x.org
@@ -19,6 +19,9 @@ Source0: http://xorg.freedesktop.org/archive/individual/lib/%{name}-%{version}.t
 %endif
 
 Requires: libX11 >= 1.5.99.902
+
+# https://gitlab.freedesktop.org/xorg/lib/libxtst/-/commit/b84737d8400db7f06293822838d0e1c374cf71c4
+Patch0: libXtst-1.2.3-CVE-2026-94286.patch
 
 BuildRequires: xorg-x11-util-macros
 BuildRequires: autoconf automake libtool
@@ -42,6 +45,7 @@ X.Org X11 libXtst development package
 
 %prep
 %setup -q -n %{tarball}-%{?gitdate:%{gitdate}}%{!?gitdate:%{version}}
+%patch -P 0 -p1
 
 %build
 autoreconf -v --install --force
@@ -75,6 +79,10 @@ rm -rf $RPM_BUILD_ROOT%{_docdir}
 %{_mandir}/man3/XTest*.3*
 
 %changelog
+* Thu Oct 22 2026 RHEL Packaging Agent <redhat-ymir-agent@redhat.com> - 1.2.3-8
+- CVE-2026-94286 libXtst: libXtst: Denial of Service via out-of-bounds read in RECORD reply parser
+  in RECORD reply parser
+
 * Thu Jul 05 2018 Adam Jackson <ajax@redhat.com> - 1.2.3-7
 - Drop useless %%defattr
 
