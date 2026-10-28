@@ -5,7 +5,7 @@
 Summary: X.Org X11 libXtst runtime library
 Name: libXtst
 Version: 1.2.4
-Release: 8%{?gitdate:.%{gitdate}git%{gitversion}}%{?dist}
+Release: 8%{?gitdate:.%{gitdate}git%{gitversion}}%{?dist}.1
 License: MIT-open-group AND HPND-sell-variant AND X11 AND HPND-doc AND HPND-doc-sell
 URL: http://www.x.org
 
@@ -18,6 +18,10 @@ Source0: http://xorg.freedesktop.org/archive/individual/lib/%{name}-%{version}.t
 %endif
 
 Requires: libX11 >= 1.5.99.902
+
+# https://issues.redhat.com/browse/RHEL-271682
+# https://gitlab.freedesktop.org/xorg/lib/libxtst/-/commit/b84737d8400db7f06293822838d0e1c374cf71c4
+Patch0: libXtst-1.2.4-CVE-2026-94286.patch
 
 BuildRequires: xorg-x11-util-macros
 BuildRequires: autoconf automake libtool make
@@ -40,6 +44,7 @@ X.Org X11 libXtst development package
 
 %prep
 %setup -q -n %{tarball}-%{?gitdate:%{gitdate}}%{!?gitdate:%{version}}
+%patch -P 0 -p1
 
 %build
 autoreconf -v --install --force
@@ -73,6 +78,11 @@ rm -rf $RPM_BUILD_ROOT%{_docdir}
 %{_mandir}/man3/XTest*.3*
 
 %changelog
+* Thu Oct 22 2026 RHEL Packaging Agent <redhat-ymir-agent@redhat.com> - 1.2.4-8.1
+- CVE-2026-94286 libXtst: libXtst: Denial of Service via out-of-bounds read in RECORD reply parser
+  out-of-bounds read in RECORD reply parser
+  Resolves: RHEL-271682
+
 * Tue Oct 29 2024 Troy Dawson <tdawson@redhat.com> - 1.2.4-8
 - Bump release for October 2024 mass rebuild:
   Resolves: RHEL-64018
